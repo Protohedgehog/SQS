@@ -1,0 +1,56 @@
+7.246	Ng3	Gelasian, Messinian, Piacenzian, Zanclean
+15.97	Ng2	Langhian, Serravallian, Tortonian
+23.03	Ng1	Aquitanian, Burdigalian
+33.9	Pg5	Chattian, Rupelian
+40.4	Pg4	Bartonian, Priabonian
+48.6	Pg3	Lutetian
+55.8	Pg2	Ypresian
+61.7	Pg1	Selandian, Thanetian
+66.043	Pg0	Danian
+70.6	K8	Maastrichtian
+84.9	K7	Campanian
+94.3	K6	Coniacian, Santonian, Turonian
+99.7	K5	Cenomanian
+112.6	K4	Albian
+125.45	K3	Aptian
+136.4	K2	Barremian, Hauterivian
+145.5	K1	Berriasian, Valanginian
+155.7	J6	Kimmeridgian, Tithonian
+164.7	J5	Callovian, Oxfordian
+171.6	J4	Bajocian, Bathonian
+183	J3	Aalenian, Toarcian
+189.6	J2	Pliensbachian
+201.6	J1	Hettangian, Sinemurian
+205.6	Tr5	Rhaetian
+221.5	Tr4	Norian
+235	Tr3	Carnian
+242	Tr2	Ladinian
+252.3	Tr1	Anisian, Induan, Olenekian
+259	P5	Changhsingian, Wuchiapingian
+268	P4	Capitanian, Wordian
+279.5	P3	Kungurian, Roadian
+290.1	P2	Artinskian
+298.9	P1	Asselian, Sakmarian
+303.4	C5	Gzhelian, Kasimovian
+314.6	C4	Moscovian
+326.4	C3	Bashkirian, Serpukhovian
+345.3	C2	Visean
+360.7	C1	Tournaisian
+376.1	D5	Famennian
+383.7	D4	Frasnian
+391.9	D3	Eifelian, Givetian
+409.1	D2	Emsian
+416	D1	Lochkovian, Pragian
+422.9	S3	Gorstian, Homerian, Ludfordian, unnamed Pridoli stage
+436	S2	Homerian, Sheinwoodian, Telychian
+443.7	S1	Aeronian, Rhuddanian
+455.8	Or5	Hirnantian, Katian
+460.9	Or4	Sandbian
+468.1	Or3	Darriwilian
+478.6	Or2	Floian
+488.3	Or1	Tremadocian
+501	Cm5	Furongian
+513	Cm4	Middle Cambrian
+520	Cm3	Atdabanian, Botomian, Toyonian
+530	Cm2	Tommotian
+542	Cm1	Manykaian
