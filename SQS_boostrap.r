@@ -1,45 +1,59 @@
-# Shareholder Quorum Subsampling, version 3.3
-# Author: John Alroy
-# Modified by Jon Tennant
-# SQS function from http://bio.mq.edu.au/~jalroy/SQS.html
-# Note that the file is no longer available from source
+# Update from Jon Tennant, 30/04/2018
+# Removed recent bug that stopped this from running (dimnames causing a problem)
+# Should now run full function, with bootstrap add-on
 
-#Read in data
-data<-read.csv("filename",header=TRUE)
-                     
-#Get number of unique genus occurrences (i.e., raw taxonomic diversity)
-data.diversity<-length(unique(Hettangian[,1])) # Change column number to whichever has the taxon name list
+# sqs version 3.2 by John Alroy
+# performs shareholder quorum subsampling on an array of specimen counts
+# can be used to perform classical rarefaction instead of SQS
+# written 29 July 2010; version 2.0 completed 14 February 2011; versions 3.0,
+#  3.1, 3.2, and 3.3 written 3 June, 12 July, 19-23 August, and 2 December 2011
+# change in version 3.3: fixed bug in computation of maximum estimated coverage
+# changes in version 3.2: specimens drawn and subsampled U are based on
+#  geometric means of counts; ignore.singletons option added
+# change in version 3.1: an even better frequency adjustment involving
+#  singletons and doubletons
+# changes in version 3.0: an even better subsampling algorithm involving a new
+#  adjustment to u combined with a new throwback criterion
+# changes in version 2.0: improved subsampling algorithm; including the dominant 
+#  taxon is now the default; improved reporting of errors and basic statistics
+# warning: do not use this program with taxonomic occurrence data drawn from
+#  multiple published references because it is not designed to count
+#  single-reference taxa or adjust for long taxonomic lists
+# warning: version 1.0 yields estimates that are downwards-biased when q < 0.6
+#  and abundance distributions are highly uneven
 
-#Convert occurrences into an array with counts of occurrences by taxon name
-data.occs<-table(Hettangian[,1]) #change column number to whichever has your taxon name list
+# Read in data
+data<-read.csv("file.csv",header=TRUE)
 
-# Read in John's sqs function
+#Convert occurrence list to occurrence table
+
+data.occs<-table(data[,"genus"])
 
 sqs<-function(ab,q,trials,method,ignore.singletons,dominant)  {
   
-  params <- array(data=NA,dim=0,dimnames=c("raw richness"))
+  params <- array(data=NA,dim=0)
   if (missing(trials))  {
     trials <- 100
   }
-  if (missing(method))	{
+  if (missing(method))  {
     method <- ""
-  } else if (method != "" && method != "rarefaction" && method != "CR")	{
+  } else if (method != "" && method != "rarefaction" && method != "CR")  {
     return(print('If the method is rarefaction enter method="rarefaction" or "CR"',quote=F))
   }
-  if ((q <= 0 || q >= 1) && method != "rarefaction" && method != "CR")	{
+  if ((q <= 0 || q >= 1) && method != "rarefaction" && method != "CR")  {
     
     return(print("If the method is SQS the quota must be greater than zero and less than one",quote=F))
-  } else if (q < 1 && (method == "rarefaction" || method == "CR"))	{
+  } else if (q < 1 && (method == "rarefaction" || method == "CR"))  {
     
     return(print("If the method is rarefaction the quota must be an integer",quote=F))
   }
   ignore <- 0
-  if (! missing(ignore.singletons) && (ignore.singletons == T || ignore.singletons == "yes" || ignore.singletons == "y"))	{
+  if (! missing(ignore.singletons) && (ignore.singletons == T || ignore.singletons == "yes" || ignore.singletons == "y"))  {
     ignore <- 1
   }
-  if (missing(dominant))	{
+  if (missing(dominant))  {
     dominant <- 0
-  } else if (dominant != "" && dominant != "exclude" && dominant != "no")	{
+  } else if (dominant != "" && dominant != "exclude" && dominant != "no")  {
     return(print('To exclude the dominant taxon, enter dominant="exclude" or "no"',quote=F))
   }
   
@@ -48,8 +62,8 @@ sqs<-function(ab,q,trials,method,ignore.singletons,dominant)  {
   singletons <- 0
   doubletons <- 0
   highest <- 0
-  for (i in 1:length(ab))	{
-    if (ab[i] == 1)	{
+  for (i in 1:length(ab))  {
+    if (ab[i] == 1)  {
       singletons <- singletons + 1
     } else if (ab[i] == 2)	{
       doubletons <- doubletons + 1
@@ -81,7 +95,7 @@ sqs<-function(ab,q,trials,method,ignore.singletons,dominant)  {
   }
   
   params["raw richness"] <- length(ab)
-  params["Good's u"] <- u
+  params["subsampled richness"] <- u
   params["subsampled richness"] <- NA
   params["subsampled u"] <- NA
   params["Chao 1"] <- length(ab) + singletons**2/(2* doubletons)
@@ -226,11 +240,20 @@ sqs<-function(ab,q,trials,method,ignore.singletons,dominant)  {
   
 }
 
-# Use on occurrence data
-# (Occurrences,quorum,trials)
-# Calculate Good's u for each time interval with a quorum of 0.1
-sqs(data.occs,0.1,1)["Good's u"]
+# Check real value with a quorum of 0.4
+sqs(data.occs,0.4)['subsampled richness']
 
-#Perform analysis using quorum selected from above (Good's u minus a little bit), and a number of trials
-sqs(data.occs,0.4,1000)["subsampled richness"] 
+# Bootstrap
+s<-rep(NA,1000)
+for(i in 1:length(s)){
+  bootstrapped<-data.occs[sample(1:length(data.occs),replace=TRUE)]
+  s[i]<-sqs(bootstrapped,0.4)['subsampled richness']
+}
 
+# To remove any NAs (bootstrapping can produce a lot of pseudo-singletons)
+s<-na.omit(s)
+s<-as.numeric(s)
+
+# Returns the median and 95% confidence intervals
+quantile(s,probs=c(0.5,0.025,0.975))
+hist(s)
